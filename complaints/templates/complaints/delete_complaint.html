@@ -1,0 +1,77 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CampusFix - Delete Complaint</title>
+    <link rel="stylesheet" href="{% static 'complaints/style.css' %}">
+</head>
+
+<body>
+
+<div class="navbar">
+
+    <div class="logo">
+        CampusFix
+    </div>
+
+    <a
+        class="nav-link"
+        href="{% url 'my_complaints' %}"
+    >
+        My Complaints
+    </a>
+
+</div>
+
+
+<div class="main">
+
+    <div class="card center">
+
+        <h1>Delete Complaint</h1>
+
+        <h2>
+            Are you sure?
+        </h2>
+
+        <p>
+            You are about to delete complaint
+            <strong>#{{ complaint.id }}</strong>.
+        </p>
+
+        <p>
+            This action cannot be undone.
+        </p>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="actions" style="justify-content:center;">
+
+                <button
+                    type="submit"
+                    class="delete-btn"
+                >
+                    Yes, Delete
+                </button>
+
+                <a
+                    class="btn cancel-btn"
+                    href="{% url 'my_complaints' %}"
+                >
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

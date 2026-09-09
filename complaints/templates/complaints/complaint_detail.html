@@ -1,0 +1,160 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CampusFix - Complaint Details</title>
+    <link rel="stylesheet" href="{% static 'complaints/style.css' %}">
+</head>
+
+<body>
+
+<div class="navbar">
+
+    <div class="logo">
+        CampusFix
+    </div>
+
+    <div>
+
+        <a class="nav-link" href="{% url 'my_complaints' %}">
+            My Complaints
+        </a>
+
+        <a class="nav-link" href="{% url 'logout' %}">
+            Logout
+        </a>
+
+    </div>
+
+</div>
+
+
+<div class="main">
+
+    <div class="card">
+
+        <h1>Complaint Details</h1>
+
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                Complaint ID:
+            </span>
+
+            #{{ complaint.id }}
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                Category:
+            </span>
+
+            {{ complaint.category }}
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                Location:
+            </span>
+
+            {{ complaint.location }}
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                Description:
+            </span>
+
+            <br><br>
+
+            {{ complaint.description }}
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                Status:
+            </span>
+
+            <span class="status">
+                {{ complaint.status }}
+            </span>
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                Created:
+            </span>
+
+            {{ complaint.created_at }}
+
+        </div>
+
+
+        {% if complaint.image %}
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                Evidence Image:
+            </span>
+
+            <br>
+
+            <img
+                src="{{ complaint.image.url }}"
+                class="evidence-image"
+            >
+
+        </div>
+
+        {% endif %}
+
+
+        <div class="actions">
+
+            <a
+                class="btn"
+                href="{% url 'edit_complaint' complaint.id %}"
+            >
+                Edit Complaint
+            </a>
+
+            <a
+                class="btn delete-btn"
+                href="{% url 'delete_complaint' complaint.id %}"
+            >
+                Delete Complaint
+            </a>
+
+            <a
+                class="btn cancel-btn"
+                href="{% url 'my_complaints' %}"
+            >
+                Back
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
