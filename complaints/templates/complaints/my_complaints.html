@@ -20,6 +20,22 @@
             Register Complaint
         </a>
 
+        <a class="nav-link" href="{% url 'dashboard' %}">
+            Dashboard
+        </a>
+
+        {% if request.user.staff_profile %}
+        <a class="nav-link" href="{% url 'staff_dashboard' %}">
+            Staff Dashboard
+        </a>
+        {% endif %}
+
+        {% if request.user.is_staff %}
+        <a class="nav-link" href="{% url 'manage_complaints' %}">
+            Manage Complaints
+        </a>
+        {% endif %}
+
         <a class="nav-link" href="{% url 'logout' %}">
             Logout
         </a>
@@ -90,6 +106,16 @@
                         <a href="{% url 'delete_complaint' complaint.id %}">
                             Delete
                         </a>
+
+                        {% if complaint.status == 'Resolved' %}
+
+                        |
+
+                        <a href="{% url 'feedback' complaint.id %}">
+                            Feedback
+                        </a>
+
+                        {% endif %}
 
                     </td>
 

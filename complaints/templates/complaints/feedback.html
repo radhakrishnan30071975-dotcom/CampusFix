@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CampusFix - Feedback</title>
+    <link rel="stylesheet" href="{% static 'complaints/style.css' %}">
+</head>
+<body>
+<div class="navbar">
+    <div class="logo">CampusFix</div>
+    <div>
+        <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+        <a class="nav-link" href="{% url 'my_complaints' %}">My Complaints</a>
+        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+    </div>
+</div>
+<div class="main">
+    <div class="card">
+        <h1>Complaint Feedback</h1>
+        <div class="detail-row"><span class="detail-label">Complaint ID:</span> #{{ complaint.id }}</div>
+        <div class="detail-row"><span class="detail-label">Category:</span> {{ complaint.category }}</div>
+        <div class="detail-row"><span class="detail-label">Location:</span> {{ complaint.location }}</div>
+        <div class="detail-row"><span class="detail-label">Status:</span> {{ complaint.status }}</div>
+        <hr>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn">Submit Feedback</button>
+            <a href="{% url 'dashboard' %}" class="btn cancel-btn">Cancel</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

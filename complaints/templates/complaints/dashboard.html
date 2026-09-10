@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CampusFix - Dashboard</title>
+    <link rel="stylesheet" href="{% static 'complaints/style.css' %}">
+</head>
+<body>
+<div class="navbar">
+    <div class="logo">CampusFix</div>
+    <div>
+        <a class="nav-link" href="{% url 'my_complaints' %}">My Complaints</a>
+        <a class="nav-link" href="{% url 'register_complaint' %}">Register Complaint</a>
+        {% if request.user.staff_profile %}
+        <a class="nav-link" href="{% url 'staff_dashboard' %}">Staff Dashboard</a>
+        {% endif %}
+        {% if request.user.is_staff %}
+        <a class="nav-link" href="{% url 'manage_complaints' %}">Manage Complaints</a>
+        {% endif %}
+        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+    </div>
+</div>
+<div class="main dashboard-main">
+    <div class="card">
+        <h1>Complaint Dashboard</h1>
+        <div class="dashboard-grid">
+            <div class="stat-card"><h3>Total Complaints</h3><p>{{ total }}</p></div>
+            <div class="stat-card"><h3>Pending</h3><p>{{ pending }}</p></div>
+            <div class="stat-card"><h3>In Progress</h3><p>{{ in_progress }}</p></div>
+            <div class="stat-card"><h3>Resolved</h3><p>{{ resolved }}</p></div>
+        </div>
+        <div class="rating-box">
+            <h3>Average Feedback Rating</h3>
+            {% if average_rating %}
+                <p>⭐ {{ average_rating|floatformat:1 }} / 5</p>
+            {% else %}
+                <p>No feedback available yet.</p>
+            {% endif %}
+        </div>
+        <form method="GET" class="filter-form">
+            <input type="text" name="search" value="{{ search }}" placeholder="Search complaints...">
+            <select name="status">
+                <option value="">All Status</option>
+                <option value="Pending" {% if selected_status == 'Pending' %}selected{% endif %}>Pending</option>
+                <option value="In Progress" {% if selected_status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                <option value="Resolved" {% if selected_status == 'Resolved' %}selected{% endif %}>Resolved</option>
+            </select>
+            <select name="category">
+                <option value="">All Categories</option>
+                {% for value, label in categories %}
+                <option value="{{ value }}" {% if selected_category == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn">Search / Filter</button>
+        </form>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>ID</th><th>Category</th><th>Location</th><th>Status</th><th>Date</th><th>Action</th>
+                </tr>
+                {% for complaint in complaints %}
+                <tr>
+                    <td>#{{ complaint.id }}</td>
+                    <td>{{ complaint.category }}</td>
+                    <td>{{ complaint.location }}</td>
+                    <td><span class="status">{{ complaint.status }}</span></td>
+                    <td>{{ complaint.created_at|date:"d-m-Y" }}</td>
+                    <td>
+                        <a href="{% url 'complaint_detail' complaint.id %}">View</a>
+                        {% if complaint.status == 'Resolved' %}
+                        | <a href="{% url 'feedback' complaint.id %}">Feedback</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="center">No complaints found.</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
