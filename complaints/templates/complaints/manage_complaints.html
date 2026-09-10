@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CampusFix - Manage Complaints</title>
+    <link rel="stylesheet" href="{% static 'complaints/style.css' %}">
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo">CampusFix</div>
+    <div>
+        <a class="nav-link" href="{% url 'manage_complaints' %}">Manage Complaints</a>
+        <a class="nav-link" href="{% url 'staff_list' %}">Staff</a>
+        <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+    </div>
+</div>
+
+<div class="main dashboard-main">
+
+    <div class="card">
+
+        <h1>Manage Complaints</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <p class="center" style="color:#1d4ed8;">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <form method="GET" class="filter-form">
+
+            <select name="status">
+                <option value="">All Status</option>
+                {% for value, label in status_choices %}
+                <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="assignment">
+                <option value="">All Complaints</option>
+                <option value="unassigned" {% if selected_assignment == 'unassigned' %}selected{% endif %}>Unassigned Only</option>
+                <option value="assigned" {% if selected_assignment == 'assigned' %}selected{% endif %}>Assigned Only</option>
+            </select>
+
+            <button type="submit" class="btn">Filter</button>
+
+        </form>
+
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Category</th>
+                    <th>Location</th>
+                    <th>Reported By</th>
+                    <th>Status</th>
+                    <th>Assigned Staff</th>
+                    <th>Action</th>
+                </tr>
+
+                {% for complaint in complaints %}
+                <tr>
+                    <td>#{{ complaint.id }}</td>
+                    <td>{{ complaint.category }}</td>
+                    <td>{{ complaint.location }}</td>
+                    <td>{{ complaint.user.username }}</td>
+                    <td><span class="status">{{ complaint.status }}</span></td>
+                    <td>
+                        {% if complaint.assigned_to %}
+                            {{ complaint.assigned_to }}
+                        {% else %}
+                            <em>Unassigned</em>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'assign_complaint' complaint.id %}">Assign</a>
+                        |
+                        <a href="{% url 'status_history' complaint.id %}">History</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="center">No complaints found.</td></tr>
+                {% endfor %}
+
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

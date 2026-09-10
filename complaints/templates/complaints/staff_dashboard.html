@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CampusFix - Staff Dashboard</title>
+    <link rel="stylesheet" href="{% static 'complaints/style.css' %}">
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo">CampusFix</div>
+    <div>
+        <a class="nav-link" href="{% url 'staff_dashboard' %}">My Assignments</a>
+        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+    </div>
+</div>
+
+<div class="main dashboard-main">
+
+    <div class="card">
+
+        <h1>Welcome, {{ staff_profile.user.get_full_name|default:staff_profile.user.username }}</h1>
+
+        <p class="center">
+            Department: <strong>{{ staff_profile.department }}</strong>
+        </p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <p class="center" style="color:#1d4ed8;">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <div class="dashboard-grid">
+            <div class="stat-card"><h3>Total Assigned</h3><p>{{ total_assigned }}</p></div>
+            <div class="stat-card"><h3>Pending</h3><p>{{ pending }}</p></div>
+            <div class="stat-card"><h3>In Progress</h3><p>{{ in_progress }}</p></div>
+            <div class="stat-card"><h3>Resolved</h3><p>{{ resolved }}</p></div>
+        </div>
+
+        <form method="GET" class="filter-form">
+            <select name="status">
+                <option value="">All Status</option>
+                <option value="Pending" {% if selected_status == 'Pending' %}selected{% endif %}>Pending</option>
+                <option value="In Progress" {% if selected_status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                <option value="Resolved" {% if selected_status == 'Resolved' %}selected{% endif %}>Resolved</option>
+            </select>
+            <button type="submit" class="btn">Filter</button>
+        </form>
+
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Category</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Assigned On</th>
+                    <th>Action</th>
+                </tr>
+
+                {% for complaint in complaints %}
+                <tr>
+                    <td>#{{ complaint.id }}</td>
+                    <td>{{ complaint.category }}</td>
+                    <td>{{ complaint.location }}</td>
+                    <td><span class="status">{{ complaint.status }}</span></td>
+                    <td>{{ complaint.assigned_at|date:"d-m-Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'update_status' complaint.id %}">Update Status</a>
+                        |
+                        <a href="{% url 'status_history' complaint.id %}">History</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="center">No complaints assigned to you yet.</td></tr>
+                {% endfor %}
+
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

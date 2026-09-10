@@ -21,6 +21,10 @@
             My Complaints
         </a>
 
+        <a class="nav-link" href="{% url 'dashboard' %}">
+            Dashboard
+        </a>
+
         <a class="nav-link" href="{% url 'logout' %}">
             Logout
         </a>
@@ -99,6 +103,21 @@
         <div class="detail-row">
 
             <span class="detail-label">
+                Assigned Staff:
+            </span>
+
+            {% if complaint.assigned_to %}
+                {{ complaint.assigned_to }}
+            {% else %}
+                <em>Not yet assigned</em>
+            {% endif %}
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span class="detail-label">
                 Created:
             </span>
 
@@ -141,6 +160,22 @@
                 href="{% url 'delete_complaint' complaint.id %}"
             >
                 Delete Complaint
+            </a>
+
+            {% if complaint.status == 'Resolved' %}
+            <a
+                class="btn"
+                href="{% url 'feedback' complaint.id %}"
+            >
+                Give Feedback
+            </a>
+            {% endif %}
+
+            <a
+                class="btn"
+                href="{% url 'status_history' complaint.id %}"
+            >
+                View Status History
             </a>
 
             <a

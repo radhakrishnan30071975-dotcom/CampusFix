@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CampusFix - Maintenance Staff</title>
+    <link rel="stylesheet" href="{% static 'complaints/style.css' %}">
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo">CampusFix</div>
+    <div>
+        <a class="nav-link" href="{% url 'manage_complaints' %}">Manage Complaints</a>
+        <a class="nav-link" href="{% url 'staff_list' %}">Staff</a>
+        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+    </div>
+</div>
+
+<div class="main dashboard-main">
+
+    <div class="card">
+
+        <h1>Maintenance Staff</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <p class="center" style="color:#1d4ed8;">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Department</th>
+                    <th>Phone</th>
+                    <th>Available</th>
+                    <th>Assigned Complaints</th>
+                </tr>
+
+                {% for staff in staff_members %}
+                <tr>
+                    <td>{{ staff.user.get_full_name|default:staff.user.username }}</td>
+                    <td>{{ staff.user.username }}</td>
+                    <td>{{ staff.department }}</td>
+                    <td>{{ staff.phone|default:"-" }}</td>
+                    <td>{% if staff.is_available %}Yes{% else %}No{% endif %}</td>
+                    <td>{{ staff.assigned_complaints.count }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="center">No staff members added yet.</td></tr>
+                {% endfor %}
+
+            </table>
+        </div>
+
+        <br>
+
+        <h2>Add Staff Member</h2>
+
+        <p>
+            Only existing users can be turned into staff. Create the user account first
+            (via <a href="/admin/">Django admin</a>), then add them here.
+        </p>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>User</label>
+                {{ form.user }}
+            </div>
+
+            <div class="form-group">
+                <label>Department</label>
+                {{ form.department }}
+            </div>
+
+            <div class="form-group">
+                <label>Phone</label>
+                {{ form.phone }}
+            </div>
+
+            <div class="form-group">
+                <label>{{ form.is_available }} Available for new assignments</label>
+            </div>
+
+            <button type="submit" class="full-btn">Add Staff Member</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

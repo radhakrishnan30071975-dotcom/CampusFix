@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CampusFix - Assign Complaint</title>
+    <link rel="stylesheet" href="{% static 'complaints/style.css' %}">
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo">CampusFix</div>
+    <div>
+        <a class="nav-link" href="{% url 'manage_complaints' %}">Manage Complaints</a>
+        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+    </div>
+</div>
+
+<div class="main">
+
+    <div class="card">
+
+        <h1>Assign Complaint #{{ complaint.id }}</h1>
+
+        <div class="detail-row">
+            <span class="detail-label">Category:</span>
+            {{ complaint.category }}
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Location:</span>
+            {{ complaint.location }}
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Description:</span>
+            <br><br>
+            {{ complaint.description }}
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Current Status:</span>
+            <span class="status">{{ complaint.status }}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Currently Assigned To:</span>
+            {% if complaint.assigned_to %}
+                {{ complaint.assigned_to }}
+            {% else %}
+                <em>Unassigned</em>
+            {% endif %}
+        </div>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Assign To Staff Member</label>
+                {{ form.assigned_to }}
+            </div>
+
+            <div class="actions">
+
+                <button type="submit">
+                    Save Assignment
+                </button>
+
+                <a class="btn cancel-btn" href="{% url 'manage_complaints' %}">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

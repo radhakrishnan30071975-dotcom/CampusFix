@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CampusFix - Status History</title>
+    <link rel="stylesheet" href="{% static 'complaints/style.css' %}">
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo">CampusFix</div>
+    <div>
+        <a class="nav-link" href="{% url 'my_complaints' %}">My Complaints</a>
+        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+    </div>
+</div>
+
+<div class="main">
+
+    <div class="card">
+
+        <h1>Status History - Complaint #{{ complaint.id }}</h1>
+
+        <div class="detail-row">
+            <span class="detail-label">Category:</span>
+            {{ complaint.category }}
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Location:</span>
+            {{ complaint.location }}
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Current Status:</span>
+            <span class="status">{{ complaint.status }}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Assigned Staff:</span>
+            {% if complaint.assigned_to %}
+                {{ complaint.assigned_to }}
+            {% else %}
+                <em>Unassigned</em>
+            {% endif %}
+        </div>
+
+        <br>
+
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Date</th>
+                    <th>Old Status</th>
+                    <th>New Status</th>
+                    <th>Changed By</th>
+                    <th>Remarks</th>
+                </tr>
+
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log.changed_at|date:"d-m-Y H:i" }}</td>
+                    <td>{{ log.old_status }}</td>
+                    <td>{{ log.new_status }}</td>
+                    <td>{{ log.changed_by.username|default:"System" }}</td>
+                    <td>{{ log.remarks|default:"-" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="center">No status changes recorded yet.</td></tr>
+                {% endfor %}
+
+            </table>
+        </div>
+
+        <div class="actions">
+            <a class="btn cancel-btn" href="{% url 'complaint_detail' complaint.id %}">
+                Back to Complaint
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
